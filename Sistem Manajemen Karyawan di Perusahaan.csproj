@@ -1,53 +1,97 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{14A8148D-9748-41DA-95BD-F52C9B21AD58}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>tuygas_pbo_sendiri_sistem_kantor</RootNamespace>
-    <AssemblyName>tuygas pbo sendiri sistem kantor</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Deterministic>true</Deterministic>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-</Project>
+using System;
+
+namespace SistemManajemenKaryawan
+{
+    class Karyawan
+    {
+        private string nama;
+        private string id;
+        private double gajiPokok;
+
+        public string Nama
+        {
+            get { return nama; }
+            set { nama = value; }
+        }
+
+        public string ID
+        {
+            get { return id; }
+            set { id = value; }
+        }
+
+        public double GajiPokok
+        {
+            get { return gajiPokok; }
+            set { gajiPokok = value; }
+        }
+
+        public virtual double HitungGaji()
+        {
+            return GajiPokok;
+        }
+    }
+
+    class KaryawanTetap : Karyawan
+    {
+        public override double HitungGaji()
+        {
+            return GajiPokok + 500000;
+        }
+    }
+
+    class KaryawanKontrak : Karyawan
+    {
+        public override double HitungGaji()
+        {
+            return GajiPokok - 200000;
+        }
+    }
+
+    class KaryawanMagang : Karyawan
+    {
+        public override double HitungGaji()
+        {
+            return GajiPokok;
+        }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("=== Sistem Manajemen Karyawan ===");
+            Console.Write("Masukkan jenis karyawan (tetap/kontrak/magang): ");
+            string jenis = Console.ReadLine().ToLower();
+
+            Console.Write("Nama: ");
+            string nama = Console.ReadLine();
+
+            Console.Write("ID: ");
+            string id = Console.ReadLine();
+
+            Console.Write("Gaji Pokok: ");
+            double gajiPokok = Convert.ToDouble(Console.ReadLine());
+
+            Karyawan karyawan;
+
+            if (jenis == "tetap")
+                karyawan = new KaryawanTetap();
+            else if (jenis == "kontrak")
+                karyawan = new KaryawanKontrak();
+            else
+                karyawan = new KaryawanMagang();
+
+            karyawan.Nama = nama;
+            karyawan.ID = id;
+            karyawan.GajiPokok = gajiPokok;
+
+            double gajiAkhir = karyawan.HitungGaji();
+
+            Console.WriteLine($"\n=== Informasi Karyawan ===");
+            Console.WriteLine($"Nama       : {karyawan.Nama}");
+            Console.WriteLine($"ID         : {karyawan.ID}");
+            Console.WriteLine($"Gaji Akhir : {gajiAkhir}");
+        }
+    }
+}
